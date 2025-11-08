@@ -121,6 +121,30 @@ export function drawMessagesApp(ctx, bounds) {
     ctx.fillText("Send 'Hello!'", bounds.minX + screenWidth/2, sendButtonY + 32);
 }
 
+function drawScannerApp(ctx, bounds) {
+    const screenWidth = bounds.maxX - bounds.minX;
+    const padding = screenWidth * 0.05;
+    const centerX = bounds.minX + screenWidth / 2;
+    const headerY = bounds.minY + padding * 3.5;
+
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.font = `bold ${Math.floor(screenWidth / 15)}px sans-serif`;
+    ctx.fillText("Scan QR Code", centerX, headerY);
+
+    // Back button
+    ctx.textAlign = 'left';
+    ctx.fillText("< Back", bounds.minX + padding, headerY);
+
+    // Draw a frame to guide the user
+    const frameSize = Math.min(screenWidth, bounds.maxY - bounds.minY) * 0.7;
+    const frameX = centerX - frameSize / 2;
+    const frameY = bounds.minY + (bounds.maxY - bounds.minY) / 2 - frameSize / 2;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(frameX, frameY, frameSize, frameSize);
+}
+
 export function drawFriendsApp(ctx, bounds) {
     const screenWidth = bounds.maxX - bounds.minX;
     const padding = screenWidth * 0.05;
@@ -157,9 +181,13 @@ export function drawFriendsApp(ctx, bounds) {
             }
         }
          // Back button
-        ctx.fillText("< Back", bounds.minX + padding * 2.5, headerY);
+         ctx.textAlign = 'left';
+        ctx.fillText("< Back", bounds.minX + padding, headerY);
 
+    } else if (state.appSubState === 'scan_qr') {
+        drawScannerApp(ctx, bounds);
     } else { // Main view
+        ctx.textAlign = 'center';
         ctx.fillText("Friends", centerX, bounds.minY + padding * 2);
         
         // Friend list

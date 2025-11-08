@@ -76,6 +76,13 @@ function handleCanvasClick(e) {
                     state.appSubState = 'main';
                     drawAppScreen('friends');
                 }
+            } else if (state.appSubState === 'scan_qr') {
+                 // Back button for scanner
+                if (y < state.screenBounds.minY + padding * 3 && x < state.screenBounds.minX + padding * 5) {
+                    stopScanner();
+                    state.appSubState = 'main';
+                    drawAppScreen('friends');
+                }
             } else { // main view
                 const buttonY = state.screenBounds.maxY - 70;
                 if (y > buttonY && y < buttonY + 50) {
@@ -88,7 +95,23 @@ function handleCanvasClick(e) {
                     }
                     // "Scan Friend" button
                     if (x > state.screenBounds.minX + padding * 2 + buttonWidth && x < state.screenBounds.maxX - padding) {
+                        state.appSubState = 'scan_qr';
+                        drawAppScreen('friends'); // Draw the scanner UI first
+
+                        // Calculate viewport position of the screen
+                        const canvasRect = getCanvas().getBoundingClientRect();
+                        const scaleX = canvasRect.width / getCanvas().width;
+                        const scaleY = canvasRect.height / getCanvas().height;
+
+                        const screenViewport = {
+                            left: canvasRect.left + state.screenBounds.minX * scaleX,
+                            top: canvasRect.top + state.screenBounds.minY * scaleY,
+                            width: (state.screenBounds.maxX - state.screenBounds.minX) * scaleX,
+                            height: (state.screenBounds.maxY - state.screenBounds.minY) * scaleY,
+                        };
+
                         startScanner(
+                            screenViewport,
                             (friendId) => {
                                 alert(`Scanned ID: ${friendId}. Connecting...`);
                                 connectToPeer(friendId);

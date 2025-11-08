@@ -4,11 +4,19 @@ const scannerContainer = document.getElementById('scanner-container');
 const closeScannerBtn = document.getElementById('close-scanner-btn');
 let html5QrCode;
 
-export function startScanner(onSuccess, onError) {
+export function startScanner(canvasScreenBounds, onSuccess, onError) {
     scannerContainer.classList.remove('hidden');
+    scannerContainer.style.top = `${canvasScreenBounds.top}px`;
+    scannerContainer.style.left = `${canvasScreenBounds.left}px`;
+    scannerContainer.style.width = `${canvasScreenBounds.width}px`;
+    scannerContainer.style.height = `${canvasScreenBounds.height}px`;
+
 
     html5QrCode = new Html5Qrcode("qr-reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    // The qrbox is relative to the video feed, not the container.
+    // We want it to be as large as possible to fill our container.
+    const smallerDimension = Math.min(canvasScreenBounds.width, canvasScreenBounds.height);
+    const config = { fps: 10, qrbox: { width: smallerDimension * 0.9, height: smallerDimension * 0.9 } };
 
     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         stopScanner();
@@ -41,4 +49,3 @@ export function stopScanner() {
 export function initScanner() {
     closeScannerBtn.addEventListener('click', stopScanner);
 }
-
