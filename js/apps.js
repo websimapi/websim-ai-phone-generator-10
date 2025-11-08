@@ -132,10 +132,13 @@ export function drawFriendsApp(ctx, bounds) {
     ctx.font = `bold ${Math.floor(screenWidth/15)}px sans-serif`;
 
     if (state.appSubState === 'show_qr') {
-        ctx.fillText("My QR Code", centerX, bounds.minY + padding * 2);
+        const headerY = bounds.minY + padding * 3.5;
+        ctx.fillText("My QR Code", centerX, headerY);
         if (state.qrCodeImage) {
             const qrSize = screenWidth * 0.7;
-            ctx.drawImage(state.qrCodeImage, centerX - qrSize/2, bounds.minY + padding * 4, qrSize, qrSize);
+            const screenHeight = bounds.maxY - bounds.minY;
+            const qrY = (bounds.minY + screenHeight / 2) - (qrSize / 2);
+            ctx.drawImage(state.qrCodeImage, centerX - qrSize/2, qrY, qrSize, qrSize);
         } else {
             ctx.fillText("Generating...", centerX, bounds.minY + 100);
             if (!state.qrCodeImage) { // Prevent multiple generations
@@ -154,7 +157,7 @@ export function drawFriendsApp(ctx, bounds) {
             }
         }
          // Back button
-        ctx.fillText("< Back", bounds.minX + padding * 2.5, bounds.minY + padding * 2);
+        ctx.fillText("< Back", bounds.minX + padding * 2.5, headerY);
 
     } else { // Main view
         ctx.fillText("Friends", centerX, bounds.minY + padding * 2);
