@@ -143,8 +143,10 @@ export function drawFriendsApp(ctx, bounds) {
                     .then(url => {
                         const img = new Image();
                         img.src = url;
-                        img.onload = () => {
+                        img.onload = async () => {
                             state.qrCodeImage = img;
+                            // Use dynamic import to avoid circular dependency
+                            const { drawAppScreen } = await import('./renderer.js');
                             drawAppScreen('friends');
                         };
                     })
